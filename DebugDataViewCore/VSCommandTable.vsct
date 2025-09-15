@@ -7,22 +7,17 @@
   <Include href="VSGlobals.vsct"/>
 
   <Commands package="DebugDataViewCore">
-    <Groups>
-      <Group guid="DebugDataViewCore" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="VSMainMenu" id="Tools"/>
-      </Group>
-    </Groups>
 
     <!--This section defines the elements the user can interact with, like a menu command or a button
         or combo box in a toolbar. -->
     <Buttons>
       <Button guid="DebugDataViewCore" id="MyCommand" priority="0x0100" type="Button">
-        <Parent guid="DebugDataViewCore" id="MyMenuGroup" />
+        <Parent guid="VSMainMenu" id="View.DevWindowsGroup.OtherWindows.Group0" />
         <Icon guid="ImageCatalogGuid" id="StatusInformation" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
           <ButtonText>My Command</ButtonText>
-          <LocCanonicalName>.DebugDataViewCore.MyCommand</LocCanonicalName>
+          <LocCanonicalName>.View.MyCommand</LocCanonicalName>
         </Strings>
       </Button>
     </Buttons>
@@ -30,7 +25,6 @@
 
   <Symbols>
     <GuidSymbol name="DebugDataViewCore" value="{9fc9ec4b-6399-42ea-b68e-5f9d47f3016f}">
-      <IDSymbol name="MyMenuGroup" value="0x0001" />
       <IDSymbol name="MyCommand" value="0x0100" />
     </GuidSymbol>
   </Symbols>
