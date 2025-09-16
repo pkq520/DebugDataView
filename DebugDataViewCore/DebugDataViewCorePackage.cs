@@ -9,7 +9,7 @@ namespace DebugDataViewCore
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration(Vsix.Name, Vsix.Description, Vsix.Version)]
-    [ProvideToolWindow(typeof(DataView.Pane), Style = VsDockStyle.Tabbed, Window = WindowGuids.SolutionExplorer)]
+    [ProvideToolWindow(typeof(DataView.Pane), Style = VsDockStyle.Tabbed, Window = WindowGuids.OutputWindow)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.DebugDataViewCoreString)]
     public sealed class DebugDataViewCorePackage : ToolkitPackage

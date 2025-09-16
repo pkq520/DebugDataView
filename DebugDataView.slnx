@@ -3,6 +3,12 @@
     <Platform Name="Any CPU" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/解决方案项/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="DebugDataViewCore/DebugDataViewCore.csproj" Id="acc68f26-46f6-474c-a542-7db9d80abce5">
     <Platform Solution="*|x86" Project="x86" />
   </Project>
