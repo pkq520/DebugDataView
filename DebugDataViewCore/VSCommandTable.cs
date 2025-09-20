@@ -22,6 +22,7 @@ namespace DebugDataViewCore
     /// </summary>
     internal sealed partial class PackageIds
     {
-        public const int MyCommand = 0x0100;
+        public const int DataViewWindow = 0x0100;
+        public const int DataViewAddItem = 0x0200;
     }
 }
