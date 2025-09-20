@@ -3,8 +3,8 @@ using static DebugDataViewCore.DataView;
 
 namespace DebugDataViewCore
 {
-    [Command(PackageIds.DebugDataView)]
-    internal sealed class DebugDataView : BaseCommand<DebugDataView>
+    [Command(PackageIds.DataViewWindow)]
+    internal sealed class DataViewWindow : BaseCommand<DataViewWindow>
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {

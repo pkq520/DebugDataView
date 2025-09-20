@@ -9,20 +9,42 @@
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
              xmlns:ScottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
+             xmlns:local="clr-namespace:DebugDataViewCore"
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
              d:DesignHeight="250"
              d:DesignWidth="600"
              Name="DataView">
+    <UserControl.DataContext>
+        <local:DataViewModel/>
+    </UserControl.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <ScottPlot:WpfPlot Margin="5, 5, 5, 5" Grid.Row="0" x:Name="WpfPlot1" />
-        <Button Margin="5, 5, 5, 5" Grid.Row="1" Content="Click me!"
-                Click="button1_Click"
-                Width="120"
-                Name="button1" />
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <ScottPlot:WpfPlot Margin="5, 5, 5, 5" Grid.Column="0" x:Name="WpfPlot1" />
+            <DataGrid Margin="5, 5, 5, 5" Grid.Column="1" x:Name="dataGrid1" 
+                      IsReadOnly="True" 
+                      CanUserAddRows="False"
+                      AutoGenerateColumns="False"
+                      ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Description}" Width="*" TextBlock.TextAlignment="Center" />
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*"  TextBlock.TextAlignment="Center"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Button Margin="5, 5, 5, 5" Content="Click me!"
+                    Click="button1_Click"
+                    Width="120"
+                    Name="button1" />
+        </Grid>
     </Grid>
 </UserControl>
