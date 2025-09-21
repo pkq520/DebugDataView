@@ -8,6 +8,7 @@ namespace DebugDataViewCore.Commands
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
+            await DataView.ShowAsync();
             string selected = await GetSelectedTextAsync();
             if (Package is DebugDataViewCorePackage debugDataViewCore) debugDataViewCore.DataViewAddItem(selected);
         }

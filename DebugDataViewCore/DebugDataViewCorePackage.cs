@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Markup;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using DebugDataViewCore.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -35,63 +38,31 @@ namespace DebugDataViewCore
             DataView.Initialize(this);
             await this.RegisterCommandsAsync();
 
+            WeakReferenceMessenger.Default.Register<SelectedItemChangedMessage>(this, (r, m) =>
+            {
+                _expressionString = m.Value;
+                DataViewRefresh(m.Value);
+            });
+
             _cancellationToken = cancellationToken;
             var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
             _dte = dte;
             _dbgEvents = _dte.Events.DebuggerEvents;
             _dbgEvents.OnEnterBreakMode += OnBreakMode;
-            _dbgEvents.OnEnterDesignMode += OnDesignMode;
 
             // 补偿：初始化时立即同步状态
-            switch (_dte.Debugger.CurrentMode)
-            {
-                case dbgDebugMode.dbgBreakMode:
-                    dbgExecutionAction reason = dbgExecutionAction.dbgExecutionActionDefault;
-                    OnBreakMode(dbgEventReason.dbgEventReasonBreakpoint, ref reason);
-                    break;
-                case dbgDebugMode.dbgDesignMode:
-                    OnDesignMode(dbgEventReason.dbgEventReasonNone);
-                    break;
-            }
+            //switch (_dte.Debugger.CurrentMode)
+            //{
+            //    case dbgDebugMode.dbgBreakMode:
+            //        dbgExecutionAction reason = dbgExecutionAction.dbgExecutionActionDefault;
+            //        OnBreakMode(dbgEventReason.dbgEventReasonBreakpoint, ref reason);
+            //        break;
+            //}
         }
 
         private void OnBreakMode(dbgEventReason reason, ref dbgExecutionAction ExecutionAction)
         {
-            try
-            {
-                ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
-                {
-                    if (GetExpressionData(_expressionString, out double[] data))
-                    {
-                        ToolWindowPane window = await ShowToolWindowAsync(typeof(Pane), 0, true, _cancellationToken);
-                        if (window?.Content is DataViewControl control) control.Refresh(data);
-                    }
-                }).FireAndForget();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error in OnBreakMode: {ex.Message}");
-            }
-        }
-
-        private void OnDesignMode(dbgEventReason reason)
-        {
-            //try
-            //{
-            //    ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
-            //    {
-            //        await JoinableTaskFactory.SwitchToMainThreadAsync();
-            //        ToolWindowPane window = await ShowToolWindowAsync(typeof(Pane), 0, true, _cancellationToken);
-            //        if (window?.Content is DataViewControl control)
-            //        {
-            //            control.Clear();
-            //        }
-            //    }).FireAndForget();
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Diagnostics.Debug.WriteLine($"Error in OnDesignMode: {ex.Message}");
-            //}
+            DataViewRefresh(_expressionString);
         }
 
         public void DataViewAddItem(string expressionString)
@@ -100,10 +71,10 @@ namespace DebugDataViewCore
             {
                 ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
                 {
-                    if (GetExpressionData(expressionString, out double[] data))
+                    if (Expression_Check(expressionString))
                     {
                         ToolWindowPane window = await ShowToolWindowAsync(typeof(Pane), 0, true, _cancellationToken);
-                        if (window?.Content is DataViewControl control) control.Refresh(data);
+                        if (window?.Content is DataViewControl control) control.AddExpression(expressionString);
                     }
                 }).FireAndForget();
             }
@@ -113,40 +84,53 @@ namespace DebugDataViewCore
             }
         }
 
-        private bool GetExpressionData(string expressionString, out double[] data)
+        private void DataViewRefresh(string expressionString)
+        {
+            try
+            {
+                var expression = _dte.Debugger.GetExpression(expressionString, true);
+                var tempData = new List<double>();
+                if (expression is { IsValidValue: true })
+                {
+                    foreach (Expression item in expression.DataMembers)
+                    {
+                        var name = item.Name;      // 元素名 (如 [0], [1] ...)
+                        var value = item.Value;    // 元素值 (字符串)
+                        var type = item.Type;      // 元素类型
+                        if (double.TryParse(value, out var parsedValue)) tempData.Add(parsedValue);
+                    }
+                }
+                ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+                {
+                    ToolWindowPane window = await ShowToolWindowAsync(typeof(Pane), 0, true, _cancellationToken);
+                    if (window?.Content is DataViewControl control)
+                    {
+                        if (tempData.Count > 0) control.Refresh(tempData.ToArray());
+                        else control.PlotClear();
+                    }
+                }).FireAndForget();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in DataViewRefresh: {ex.Message}");
+            }
+        }
+
+        private bool Expression_Check(string expressionString)
         {
             var expression = _dte.Debugger.GetExpression(expressionString, true);
-            var tempData = new List<double>();
-            if (expression != null && expression.IsValidValue)
-            {
-                foreach (Expression item in expression.DataMembers)
-                {
-                    var name = item.Name;      // 元素名 (如 [0], [1] ...)
-                    var value = item.Value;    // 元素值 (字符串)
-                    var type = item.Type;      // 元素类型
-                    if (double.TryParse(value, out var parsedValue)) tempData.Add(parsedValue);
-                }
-            }
-            if(tempData.Count > 0) {
-                _expressionString = expressionString;
-                data = tempData.ToArray();
-                return true;
-            }
-            else
-            {
-                data = [];
-                return false;
-            }
+            if (expression is { IsValidValue: true }) return true;
+            else return false;  
         }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                WeakReferenceMessenger.Default.Unregister<SelectedItemChangedMessage>(this);
                 // 取消事件绑定
                 if (_dte != null)
                 {
                     _dbgEvents.OnEnterBreakMode -= OnBreakMode;
-                    _dbgEvents.OnEnterDesignMode -= OnDesignMode;
                 }
             }
             base.Dispose(disposing);
