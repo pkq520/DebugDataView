@@ -10,7 +10,15 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace DebugDataViewCore
 {
-    public class SelectedItemChangedMessage(string value) : ValueChangedMessage<string>(value) { }
+    public class ItemChanged(string value) : ValueChangedMessage<string>(value);
+    public class DataIntervalMove(MoveEnum value) : ValueChangedMessage<MoveEnum>(value);
+    public class PlotItemChanged() : ValueChangedMessage<string>(null);
+
+    public enum MoveEnum
+    {
+        LeftMove,
+        RightMove
+    }
 
     public partial class DataViewWindowModel
     {
@@ -27,7 +35,7 @@ namespace DebugDataViewCore
 
             partial void OnSelectedItemChanged(string value)
             {
-                WeakReferenceMessenger.Default.Send(new SelectedItemChangedMessage(value));
+                WeakReferenceMessenger.Default.Send(new ItemChanged(value));
             }
         }
 
@@ -37,10 +45,10 @@ namespace DebugDataViewCore
         public partial class DataInfoItem : ObservableObject
         {
             [ObservableProperty]
-            private string description;
+            private string _description;
 
             [ObservableProperty]
-            private double value;
+            private double _value;
         }
     }
 }

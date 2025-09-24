@@ -24,20 +24,39 @@ namespace DebugDataViewCore
         /// 数据信息
         /// </summary>
         public ObservableCollection<DataInfoItem> DataInfoItems { get; set; } = [
-            new DataInfoItem { Description = "最大值", Value = 0 },
-            new DataInfoItem { Description = "最小值", Value = 0 },
-            new DataInfoItem { Description = "平均值", Value = 0 },
+            new DataInfoItem { Description = "Max", Value = 0 },
+            new DataInfoItem { Description = "Min", Value = 0 },
+            new DataInfoItem { Description = "Average", Value = 0 },
+            new DataInfoItem { Description = "Data length", Value = 0 },
         ];
+
+        [ObservableProperty]
+        private string _infoDiaplay = "";
+        [ObservableProperty]
+        private string _intervalinfoDiaplay = "(-/-)";
+
+        //public 
 
         [RelayCommand]
         private void ExpressionListsClear()
         {
             ExpressionLists.Items.Clear();
             ExpressionLists.SelectedItem = "";
+            for (int i = 0; i < DataInfoItems.Count; i++) DataInfoItems[i].Value = 0;
+            InfoDiaplay = "";
+            IntervalinfoDiaplay = "(-/-)";
+        }
 
-            DataInfoItems[0].Value = 0;
-            DataInfoItems[1].Value = 0;
-            DataInfoItems[2].Value = 0;
+        [RelayCommand]
+        private void LeftMove()
+        {
+            WeakReferenceMessenger.Default.Send(new DataIntervalMove(MoveEnum.LeftMove));
+        }
+
+        [RelayCommand]
+        private void RigthMove()
+        {
+            WeakReferenceMessenger.Default.Send(new DataIntervalMove(MoveEnum.RightMove));
         }
     }
 }

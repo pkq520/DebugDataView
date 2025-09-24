@@ -5,6 +5,7 @@ global using Task = System.Threading.Tasks.Task;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Markup;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
@@ -12,7 +13,10 @@ using DebugDataViewCore.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
+using Newtonsoft.Json.Linq;
 using ScottPlot.Drawing.Colormaps;
+using static CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger;
 using static DebugDataViewCore.DataView;
 using static Microsoft.VisualStudio.Threading.AsyncReaderWriterLock;
 
@@ -26,114 +30,32 @@ namespace DebugDataViewCore
         Window = WindowGuids.Locals)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.DebugDataViewCoreString)]
-    public sealed class DebugDataViewCorePackage : ToolkitPackage
+    public sealed partial class DebugDataViewCorePackage : ToolkitPackage
     {
         private DTE2 _dte;
         private EnvDTE.DebuggerEvents _dbgEvents;
-        private CancellationToken _cancellationToken;
+        public CancellationToken CancelToken;
         private string _expressionString = "";
+        private DataViewWindow _dataViewWindow;
+        private readonly int _perPlotMaxNum = 1000;
+        private int _currentIndex = 0;
+        private int _dataLength = 0;
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            CancelToken = cancellationToken;
             DataView.Initialize(this);
             await this.RegisterCommandsAsync();
 
-            WeakReferenceMessenger.Default.Register<SelectedItemChangedMessage>(this, (r, m) =>
+            Default.Register<ItemChanged>(this, ItemChangedReceiver);
+            Default.Register<DataIntervalMove>(this, DataIntervalMoveReceiver);
+
+            if (await GetServiceAsync(typeof(DTE)) is DTE2 dte)
             {
-                _expressionString = m.Value;
-                DataViewRefresh(m.Value);
-            });
-
-            _cancellationToken = cancellationToken;
-            var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
-            _dte = dte;
-            _dbgEvents = _dte.Events.DebuggerEvents;
-            _dbgEvents.OnEnterBreakMode += OnBreakMode;
-
-            // 补偿：初始化时立即同步状态
-            //switch (_dte.Debugger.CurrentMode)
-            //{
-            //    case dbgDebugMode.dbgBreakMode:
-            //        dbgExecutionAction reason = dbgExecutionAction.dbgExecutionActionDefault;
-            //        OnBreakMode(dbgEventReason.dbgEventReasonBreakpoint, ref reason);
-            //        break;
-            //}
-        }
-
-        private void OnBreakMode(dbgEventReason reason, ref dbgExecutionAction ExecutionAction)
-        {
-            DataViewRefresh(_expressionString);
-        }
-
-        public void DataViewAddItem(string expressionString)
-        {
-            try
-            {
-                ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
-                {
-                    if (Expression_Check(expressionString))
-                    {
-                        ToolWindowPane window = await ShowToolWindowAsync(typeof(Pane), 0, true, _cancellationToken);
-                        if (window?.Content is DataViewControl control) control.AddExpression(expressionString);
-                    }
-                }).FireAndForget();
+                _dte = dte;
+                _dbgEvents = _dte.Events.DebuggerEvents;
+                _dbgEvents.OnEnterBreakMode += OnBreakMode;
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error in DataViewAddItem: {ex.Message}");
-            }
-        }
-
-        private void DataViewRefresh(string expressionString)
-        {
-            try
-            {
-                var expression = _dte.Debugger.GetExpression(expressionString, true);
-                var tempData = new List<double>();
-                if (expression is { IsValidValue: true })
-                {
-                    foreach (Expression item in expression.DataMembers)
-                    {
-                        var name = item.Name;      // 元素名 (如 [0], [1] ...)
-                        var value = item.Value;    // 元素值 (字符串)
-                        var type = item.Type;      // 元素类型
-                        if (double.TryParse(value, out var parsedValue)) tempData.Add(parsedValue);
-                    }
-                }
-                ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
-                {
-                    ToolWindowPane window = await ShowToolWindowAsync(typeof(Pane), 0, true, _cancellationToken);
-                    if (window?.Content is DataViewControl control)
-                    {
-                        if (tempData.Count > 0) control.Refresh(tempData.ToArray());
-                        else control.PlotClear();
-                    }
-                }).FireAndForget();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error in DataViewRefresh: {ex.Message}");
-            }
-        }
-
-        private bool Expression_Check(string expressionString)
-        {
-            var expression = _dte.Debugger.GetExpression(expressionString, true);
-            if (expression is { IsValidValue: true }) return true;
-            else return false;  
-        }
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                WeakReferenceMessenger.Default.Unregister<SelectedItemChangedMessage>(this);
-                // 取消事件绑定
-                if (_dte != null)
-                {
-                    _dbgEvents.OnEnterBreakMode -= OnBreakMode;
-                }
-            }
-            base.Dispose(disposing);
         }
     }
 }

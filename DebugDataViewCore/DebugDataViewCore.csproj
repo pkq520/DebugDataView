@@ -45,9 +45,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Commands\DataViewAddItem.cs" />
+    <Compile Include="Commands\DataViewItemAdd.cs" />
+    <Compile Include="Core\CoreFeature.cs" />
+    <Compile Include="Core\InfoShow.cs" />
+    <Compile Include="Core\EventHander.cs" />
+    <Compile Include="Core\LoadClose.cs" />
+    <Compile Include="Core\MessageReceiver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Commands\DataViewWindow.cs" />
+    <Compile Include="Commands\DataViewWindowShow.cs" />
     <Compile Include="DebugDataViewCorePackage.cs" />
     <Compile Include="source.extension.cs">
       <AutoGen>True</AutoGen>
@@ -55,8 +60,8 @@
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\DataView.cs" />
-    <Compile Include="ToolWindows\DataViewControl.xaml.cs">
-      <DependentUpon>DataViewControl.xaml</DependentUpon>
+    <Compile Include="ToolWindows\DataViewWindow.xaml.cs">
+      <DependentUpon>DataViewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\DataViewWindowModel.cs" />
     <Compile Include="ToolWindows\DataViewWindowViewModel.cs" />
@@ -144,13 +149,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(OutputPath)\ScottPlot.dll">
+    <Content Include="bin\Debug\\ScottPlot.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ToolWindows\DataViewControl.xaml">
+    <Page Include="ToolWindows\DataViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
