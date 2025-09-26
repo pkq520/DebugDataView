@@ -26,7 +26,7 @@ namespace DebugDataViewCore
                 if (_dataLength > _perPlotMaxNum) await ShowInfo("Data volume exceeds the upper limit,therefore paginated display is required");
                 int startIndex = _currentIndex * _perPlotMaxNum;
                 int stopIndex = _dataLength > (_currentIndex + 1) * _perPlotMaxNum ? (_currentIndex + 1) * _perPlotMaxNum - 1 : _dataLength - 1;
-                await ShowIntervalinfo($"({_currentIndex + 1}/{Math.Ceiling(_dataLength / (double)_perPlotMaxNum)})[{startIndex}~{stopIndex}]");
+                await ShowIntervalinfo($"({_currentIndex + 1}-{Math.Ceiling(_dataLength / (double)_perPlotMaxNum)}) [{startIndex}~{stopIndex}]");
                 await GetPerData(startIndex, stopIndex);
             }
         }

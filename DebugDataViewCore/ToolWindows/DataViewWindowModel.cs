@@ -12,12 +12,24 @@ namespace DebugDataViewCore
 {
     public class ItemChanged(string value) : ValueChangedMessage<string>(value);
     public class DataIntervalMove(MoveEnum value) : ValueChangedMessage<MoveEnum>(value);
-    public class PlotItemChanged() : ValueChangedMessage<string>(null);
+    public class PlotItemChanged(PlotItemEnum value) : ValueChangedMessage<PlotItemEnum>(value);
 
     public enum MoveEnum
     {
         LeftMove,
         RightMove
+    }
+
+    public enum PlotItemEnum
+    {
+        HorizontalLock,
+        HorizontalUnlock,
+        VerticalLock,
+        VerticalUnlock,
+        PeakInfoDiaplay,
+        PeakInfoUnDiaplay,
+        AutoScale,
+        PlotRefresh,
     }
 
     public partial class DataViewWindowModel

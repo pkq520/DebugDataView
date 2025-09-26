@@ -91,31 +91,31 @@
                             <!-- 工具栏 -->
                             <ToolBarTray Grid.Row="0" AllowDrop="False" Background="White">
                                 <ToolBar>
-                                    <ToggleButton>
+                                    <ToggleButton IsChecked="{Binding IsHorizontalLock}">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/左右箭头.png" Width="16" Height="16"/>
                                         <ToggleButton.ToolTip>
                                             <ToolTip Content="Horizontal lock/unlock"/>
                                         </ToggleButton.ToolTip>
                                     </ToggleButton>
-                                    <ToggleButton>
+                                    <ToggleButton IsChecked="{Binding IsVerticalLock}">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/上下箭头.png" Width="16" Height="16"/>
                                         <ToggleButton.ToolTip>
                                             <ToolTip Content="Vertical lock/unlock"/>
                                         </ToggleButton.ToolTip>
                                     </ToggleButton>
-                                    <Button>
+                                    <Button Command="{Binding AutoScaleCommand}">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/左上右下箭头.png" Width="16" Height="16"/>
                                         <Button.ToolTip>
                                             <ToolTip Content="Auto scale"/>
                                         </Button.ToolTip>
                                     </Button>
-                                    <ToggleButton>
+                                    <ToggleButton IsChecked="{Binding IsPeakInfoDiaplay}">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/十字标记.png" Width="16" Height="16"/>
                                         <ToggleButton.ToolTip>
                                             <ToolTip Content="Peak Information"/>
                                         </ToggleButton.ToolTip>
                                     </ToggleButton>
-                                    <Button>
+                                    <Button Command="{Binding PlotRefreshCommand}">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/双旋转箭头.png" Width="16" Height="16"/>
                                         <Button.ToolTip>
                                             <ToolTip Content="Manual refresh"/>
@@ -136,19 +136,19 @@
                                     </Button>
                                     <Separator/>
                                     <!-- 导出 -->
-                                    <Button>
+                                    <Button x:Name="ExportToFile" Click="Export_Click">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/文件.png" Width="16" Height="16"/>
                                         <Button.ToolTip>
                                             <ToolTip Content="Export as file"/>
                                         </Button.ToolTip>
                                     </Button>
-                                    <Button>
+                                    <Button x:Name="ExportToPicture" Click="Export_Click">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/图片.png" Width="16" Height="16"/>
                                         <Button.ToolTip>
                                             <ToolTip Content="Export as image"/>
                                         </Button.ToolTip>
                                     </Button>
-                                    <Button>
+                                    <Button x:Name="ExportToClipboard" Click="Export_Click">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/剪.png" Width="16" Height="16"/>
                                         <Button.ToolTip>
                                             <ToolTip Content="Export to clipboard"/>
@@ -156,7 +156,7 @@
                                     </Button>
                                 </ToolBar>
                             </ToolBarTray>
-                            <ScottPlot:WpfPlot Grid.Row="1" x:Name="ScottPlot_Basic"/>
+                            <ScottPlot:WpfPlot Grid.Row="1" x:Name="ScottPlot_Basic" MouseDown="ScottPlot_Basic_MouseDown"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
