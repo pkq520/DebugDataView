@@ -15,11 +15,7 @@ namespace DebugDataViewCore
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             Expression expressionResult = _dte.Debugger.GetExpression(expression, true);
-            if (expressionResult is { IsValidValue: true })
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                _dataViewWindow.AddExpression(expression);
-            }
+            if (expressionResult is { IsValidValue: true }) _dataViewWindow.AddExpression(expression);
         }
 
         /// <summary>
@@ -58,9 +54,11 @@ namespace DebugDataViewCore
                     index++;
                 }
             }
-            if (tempData.Length > 0) _dataViewWindow.AddData(tempData);
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            if (tempData.Length > 0) _dataViewWindow.Refresh();
+            if (tempData.Length > 0)
+            {
+                _dataViewWindow.AddData(tempData);
+                _dataViewWindow.Refresh();
+            }
             else _dataViewWindow.PlotClear();
         }
     }
