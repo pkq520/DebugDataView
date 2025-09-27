@@ -8,7 +8,12 @@
       <Platform Solution="*|x86" Project="x86" />
     </Project>
   </Folder>
+  <Folder Name="/Support/">
+    <Project Path="Support/DataSturctures/DataSturctures.csproj" />
+    <Project Path="Support/FunctionalService/FunctionalService.csproj" Id="8f0a9aa9-78d2-44a3-b4c6-9815f77a4a0e" />
+  </Folder>
   <Folder Name="/解决方案项/">
+    <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
     <File Path="LICENSE.txt" />

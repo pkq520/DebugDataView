@@ -1,12 +1,10 @@
-﻿using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using EnvDTE;
-using EnvDTE80;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Imaging;
-using ScottPlot;
 
 namespace DebugDataViewCore
 {

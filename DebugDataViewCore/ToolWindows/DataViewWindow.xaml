@@ -8,13 +8,13 @@
              xmlns:util="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
-             xmlns:ScottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
              toolkit:Themes.UseVsTheme="False"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="1000"
              Name="DataView"
              Background="White"
+             Loaded="DataView_Loaded"
              >
     <!--xmlns:debugDataViewCore="clr-namespace:DebugDataViewCore"-->
     <!-- 运行时需移除全部的设计器定义以及相关变量，否则MVVM工具构建的文件无法成功编译，会出现诸如未包含变量定义的错误-->
@@ -31,7 +31,7 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="230"/>
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*" MinWidth="300"/>
                 </Grid.ColumnDefinitions>
@@ -51,7 +51,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Margin="5, 5, 0, 5" Text="Expression:" />
-                                <TextBlock Grid.Column="2" Margin="0, 5, 5, 5" Text="{Binding IntervalinfoDiaplay}" />
+                                <TextBlock Grid.Column="2" Margin="0, 5, 5, 5" Text="{Binding DataIntervalInfoDiaplay}" />
                             </Grid>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -156,13 +156,22 @@
                                     </Button>
                                 </ToolBar>
                             </ToolBarTray>
-                            <ScottPlot:WpfPlot Grid.Row="1" x:Name="ScottPlot_Basic" MouseDown="ScottPlot_Basic_MouseDown"/>
+                            <WpfPlot Grid.Row="1" x:Name="ScottPlot_Basic" MouseDown="ScottPlot_Basic_MouseDown"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
             </Grid>
             <Grid Grid.Row="2">
-                <TextBlock Text="{Binding InfoDiaplay}"/>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RunInfoDiaplay}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <TextBlock Text="{Binding RunInfoDiaplay}"/>
             </Grid>
         </Grid>
         

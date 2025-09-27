@@ -1,41 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EnvDTE;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
 
 namespace DebugDataViewCore
 {
     public partial class DebugDataViewCorePackage
     {
-        public async Task DataViewItemAdd(string expressionString)
+        /// <summary>
+        /// 添加表达式
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        /// <returns>返回异步任务</returns>
+        public async Task DataViewItemAddAsync(string expression)
         {
-            var expression = _dte.Debugger.GetExpression(expressionString, true);
-            if (expression is { IsValidValue: true })
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            Expression expressionResult = _dte.Debugger.GetExpression(expression, true);
+            if (expressionResult is { IsValidValue: true })
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                _dataViewWindow.AddExpression(expressionString);
+                _dataViewWindow.AddExpression(expression);
             }
         }
 
-        private async Task DataViewRefresh()
+        /// <summary>
+        /// 数据刷新
+        /// </summary>
+        /// <returns>返回异步任务</returns>
+        private async Task DataViewRefreshAsync()
         {
-            if (int.TryParse(_dte.Debugger.GetExpression(_expressionString + ".Length", true).Value, out _dataLength))
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (int.TryParse(_dte.Debugger.GetExpression(_debugData.CurrentExpression + ".Length", true).Value, out _debugData.DataLength))
             {
-                if (_dataLength > _perPlotMaxNum) await ShowInfo("Data volume exceeds the upper limit,therefore paginated display is required");
-                int startIndex = _currentIndex * _perPlotMaxNum;
-                int stopIndex = _dataLength > (_currentIndex + 1) * _perPlotMaxNum ? (_currentIndex + 1) * _perPlotMaxNum - 1 : _dataLength - 1;
-                await ShowIntervalinfo($"({_currentIndex + 1}-{Math.Ceiling(_dataLength / (double)_perPlotMaxNum)}) [{startIndex}~{stopIndex}]");
-                await GetPerData(startIndex, stopIndex);
+                if (_debugData.DataLength > _debugData.PerPlotMaxNum)
+                    await ShowRunInfoAsync("Data volume exceeds the upper limit,therefore paginated display is required");
+                await ShowDataIntervalinfoAsync(_debugData.GetDataIntervalinfo());
+                await GetViewDataAsync();
             }
         }
 
-        private async Task GetPerData(int startIndex, int stopIndex)
+        /// <summary>
+        /// 获取需要显示的数据
+        /// </summary>
+        /// <returns>返回异步任务</returns>
+        private async Task GetViewDataAsync()
         {
-            string dataInterval = $"[{startIndex}..{stopIndex}]";
-            var expression = _dte.Debugger.GetExpression(_expressionString + dataInterval, true);
-            double[] tempData = new double[stopIndex - startIndex + 1]; ;
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            string dataIntervalString = $"[{_debugData.StartIndex}..{_debugData.StopIndex}]";
+            Expression expression = _dte.Debugger.GetExpression(_debugData.CurrentExpression + dataIntervalString, true);
+            double[] tempData = new double[_debugData.StopIndex - _debugData.StartIndex + 1];
             if (expression is { IsValidValue: true })
             {
                 Expressions dataMembers = expression.DataMembers;
@@ -46,7 +58,7 @@ namespace DebugDataViewCore
                     index++;
                 }
             }
-            if (tempData.Length > 0) _dataViewWindow.AddPlotData(tempData);
+            if (tempData.Length > 0) _dataViewWindow.AddData(tempData);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (tempData.Length > 0) _dataViewWindow.Refresh();
             else _dataViewWindow.PlotClear();

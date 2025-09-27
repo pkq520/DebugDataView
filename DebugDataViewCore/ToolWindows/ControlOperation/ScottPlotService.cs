@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DataSturctures;
+using DataSturctures.Extensions;
 using MathNet.Numerics;
 using ScottPlot;
 using ScottPlot.Plottable;
-using static DebugDataViewCore.Support.DataStructures;
+using static DataSturctures.Extensions.StructExtensions;
 
 namespace DebugDataViewCore.Support
 {
+    /// <summary>
+    /// ScottPlot服务接口
+    /// </summary>
     public interface IScottPlotService
     {
         /// <summary>
@@ -93,6 +95,10 @@ namespace DebugDataViewCore.Support
         /// <returns>如果有空位返回第一个空位的索引，否则返回-1</returns>
         int CustomPointVacancy_Check();
     }
+
+    /// <summary>
+    /// ScottPlot服务实现
+    /// </summary>
     public class ScottPlotService : IScottPlotService
     {
         /// <summary>
@@ -271,7 +277,7 @@ namespace DebugDataViewCore.Support
         }
 
         /// <inheritdoc/>
-        public void CustomPoint_Add(WpfPlot scottPlotParameter, int targetIndex, 
+        public void CustomPoint_Add(WpfPlot scottPlotParameter, int targetIndex,
             double pointX, double pointY, ILinearParameter linearParameter)
         {
             scottPlotParameter.Plot.Remove(_customPoint[targetIndex]);

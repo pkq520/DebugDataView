@@ -1,32 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DataSturctures.Extensions;
+using static DataSturctures.Extensions.StructExtensions;
 
-namespace DebugDataViewCore.Support
+namespace FunctionalService
 {
     /// <summary>
-    /// 点坐标结构体(Y可接受double)
+    /// 数学服务接口
     /// </summary>
-    /// <remarks>
-    /// 点坐标结构体构造函数
-    /// </remarks>
-    /// <param name="x">X坐标</param>
-    /// <param name="y">Y坐标</param>
-    public struct PointD(int x, double y)
-    {
-        /// <summary> 
-        /// X坐标 
-        /// </summary>
-        public int X { get; set; } = x;
-
-        /// <summary> 
-        /// Y坐标 
-        /// </summary>
-        public double Y { get; set; } = y;
-    }
-
     public interface IMathService
     {
         /// <summary>
@@ -37,11 +19,14 @@ namespace DebugDataViewCore.Support
         /// <param name="peakInterval">峰之间的最小间隔</param>
         /// <param name="slideWidth">数据窗口滑动宽度</param>
         /// <returns>
-        /// 返回根据Y值从大到小排序好的 <see cref="List{PointD}"/>，T为 <see cref="PointD"/>， <see cref="PointD"/>
+        /// 返回根据Y值从大到小排序好的 <see cref="List{PointD}"/>，T为 <see cref="StructExtensions.PointD"/>， <see cref="StructExtensions.PointD"/>
         /// 的 X 代表目标峰对应数组的下标，Y 则代表对应的数值。
         /// </returns>
         List<PointD> Peaks_Calculate(double[] data, int peakPointNum, int peakInterval = 20, int slideWidth = 10);
     }
+    /// <summary>
+    /// 数学服务实现
+    /// </summary>
     public class MathService : IMathService
     {
         /// <inheritdoc/>
@@ -178,7 +163,7 @@ namespace DebugDataViewCore.Support
                 }
             }
             // 限制峰值数量
-            resultPeaks = resultPeaks.OrderByDescending(p => p.Y).Take(Math.Min(peakPointNum, resultPeaks.Count)).ToList();
+            resultPeaks = [.. resultPeaks.OrderByDescending(p => p.Y).Take(Math.Min(peakPointNum, resultPeaks.Count))];
             return resultPeaks;
         }
     }

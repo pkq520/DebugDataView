@@ -1,6 +1,6 @@
-﻿using System.Threading;
-using EnvDTE;
-using static DebugDataViewCore.DataView;
+﻿using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
 
 namespace DebugDataViewCore
 {
@@ -9,10 +9,9 @@ namespace DebugDataViewCore
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await DataView.ShowAsync();
+            ToolWindowPane window = await DataView.ShowAsync();
             if (Package is DebugDataViewCorePackage debugDataViewCore)
             {
-                ToolWindowPane window = await debugDataViewCore.ShowToolWindowAsync(typeof(Pane), 0, true, debugDataViewCore.CancelToken);
                 if (window?.Content is DataViewWindow dataViewWindow) debugDataViewCore.Init(dataViewWindow);
             }
         }

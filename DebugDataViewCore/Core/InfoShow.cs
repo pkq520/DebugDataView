@@ -1,23 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
 
 namespace DebugDataViewCore
 {
     public partial class DebugDataViewCorePackage
     {
-        private async Task ShowInfo(string info)
+        /// <summary>
+        /// 展示运行信息
+        /// </summary>
+        /// <param name="info">显示的信息</param>
+        /// <returns>返回异步任务</returns>
+        private async Task ShowRunInfoAsync(string info)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            _dataViewWindow.ShowInfo(info);
+            _dataViewWindow.ShowRunInfo(info);
         }
 
-        private async Task ShowIntervalinfo(string info)
+        /// <summary>
+        /// 展示数据划分信息
+        /// </summary>
+        /// <param name="info">显示的信息</param>
+        /// <returns>返回异步任务</returns>
+        private async Task ShowDataIntervalinfoAsync(string info)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            _dataViewWindow.ShowIntervalinfo(info);
+            _dataViewWindow.ShowDataIntervalinfo(info);
         }
     }
 }

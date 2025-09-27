@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DebugDataViewCore.Support.DataStructures;
-
-namespace DebugDataViewCore.Support
+﻿namespace DataSturctures.Extensions
 {
+    /// <summary>
+    /// 工具扩展
+    /// </summary>
     public static class ToolExtensions
     {
         /// <summary>

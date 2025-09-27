@@ -51,6 +51,7 @@
     <Compile Include="Core\EventHander.cs" />
     <Compile Include="Core\LoadClose.cs" />
     <Compile Include="Core\MessageReceiver.cs" />
+    <Compile Include="Core\ParameterDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\DataViewWindowShow.cs" />
     <Compile Include="DebugDataViewCorePackage.cs" />
@@ -59,17 +60,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
-    <Compile Include="Support\DataStructures.cs" />
-    <Compile Include="Support\FileExportService.cs" />
-    <Compile Include="Support\ToolExtensions.cs" />
-    <Compile Include="Support\MathService.cs" />
-    <Compile Include="Support\ScottPlotService.cs" />
+    <Compile Include="ToolWindows\ControlOperation\ScottPlotService.cs" />
     <Compile Include="ToolWindows\DataView.cs" />
     <Compile Include="ToolWindows\DataViewWindow.xaml.cs">
       <DependentUpon>DataViewWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\DataViewWindowModel.cs" />
-    <Compile Include="ToolWindows\DataViewWindowViewModel.cs" />
+    <Compile Include="ToolWindows\DataViewWindow\DataProcess.cs" />
+    <Compile Include="ToolWindows\DataViewWindow\LoadClose.cs" />
+    <Compile Include="ToolWindows\DataViewWindow\MouseOperation.cs" />
+    <Compile Include="ToolWindows\DataViewWindow\ParameterDefinition.cs" />
+    <Compile Include="ToolWindows\DataViewWindow\ToolBarTray.cs" />
+    <Compile Include="ToolWindows\Model\DataViewWindowModel.cs" />
+    <Compile Include="ToolWindows\Model\DataViewWindowViewModel.cs" />
+    <Compile Include="ToolWindows\DataViewWindow\ShowInfo.cs" />
     <Compile Include="VSCommandTable.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -157,16 +160,20 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\\ScottPlot.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="ToolWindows\DataViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Support\DataSturctures\DataSturctures.csproj">
+      <Project>{ca0a4bd0-e34d-1f10-ddd2-a0ed88ccd688}</Project>
+      <Name>DataSturctures</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Support\FunctionalService\FunctionalService.csproj">
+      <Project>{8f0a9aa9-78d2-44a3-b4c6-9815f77a4a0e}</Project>
+      <Name>FunctionalService</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
