@@ -1,9 +1,6 @@
 # 文本文件将根据签出平台自动切换换行符，会被更精确的规则覆盖。互斥规则会相互覆盖。
 * text=auto
 
-# CS
-*.cs      text eol=lf 
-
 # 文本文件
 *.doc       diff=astextplain 
 *.DOC	    diff=astextplain
