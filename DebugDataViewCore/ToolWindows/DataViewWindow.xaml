@@ -8,19 +8,43 @@
              xmlns:util="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
-             toolkit:Themes.UseVsTheme="False"
+             xmlns:styles="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="1000"
              Name="DataView"
-             Background="White"
-             Loaded="DataView_Loaded"
              >
     <!--xmlns:debugDataViewCore="clr-namespace:DebugDataViewCore"-->
     <!-- 运行时需移除全部的设计器定义以及相关变量，否则MVVM工具构建的文件无法成功编译，会出现诸如未包含变量定义的错误-->
     <!--<d:UserControl.DataContext>
         <debugDataViewCore:DataViewWindowViewModel/>
     </d:UserControl.DataContext>-->
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderThickness" Value="0.3" />
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+    </UserControl.Resources>
     <DockPanel Margin="7">
         <!-- 主体内容区 -->
         <Grid MinHeight="200">
@@ -59,20 +83,20 @@
                                     <ColumnDefinition Width="50"/>
                                 </Grid.ColumnDefinitions>
                                 <ComboBox Grid.Column="0" Margin="5, 0, 5, 5"
-                              ItemsSource="{Binding ExpressionLists.Items}" 
-                              SelectedItem="{Binding ExpressionLists.SelectedItem}"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Center"/>
+                                      ItemsSource="{Binding ExpressionLists.Items}" 
+                                      SelectedItem="{Binding ExpressionLists.SelectedItem}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center"/>
                                 <Button Grid.Column="1" Margin="5, 0, 5, 5" Content="Clear"
-                            Command="{Binding ExpressionListsClearCommand }"/>
+                                      Command="{Binding ExpressionListsClearCommand }"/>
                             </Grid>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Grid.Row="2" Header="Data info show">
                         <DataGrid IsReadOnly="True" 
-                      CanUserAddRows="False"
-                      AutoGenerateColumns="False"
-                      ItemsSource="{Binding DataInfoItems}">
+                              CanUserAddRows="False"
+                              AutoGenerateColumns="False"
+                              ItemsSource="{Binding DataInfoItems}">    
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Name" Binding="{Binding Description}" Width="*" TextBlock.TextAlignment="Center" />
                                 <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*"  TextBlock.TextAlignment="Center"/>

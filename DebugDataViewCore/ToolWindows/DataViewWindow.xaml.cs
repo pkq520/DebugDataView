@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace DebugDataViewCore
 {
@@ -8,6 +9,7 @@ namespace DebugDataViewCore
         {
             InitializeComponent();
             DataContext = _viewModel;
+            DataViewLoaded();
         }
     }
 }

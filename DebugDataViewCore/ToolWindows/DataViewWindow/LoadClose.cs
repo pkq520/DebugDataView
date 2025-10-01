@@ -7,11 +7,9 @@ namespace DebugDataViewCore
     public partial class DataViewWindow
     {
         /// <summary>
-        /// 窗口装载时触发的事件
+        /// 初始化事件
         /// </summary>
-        /// <param name="sender">发送者</param>
-        /// <param name="e">相关信息</param>
-        private void DataView_Loaded(object sender, RoutedEventArgs e)
+        private void DataViewLoaded()
         {
             ScottPlot_Basic.Plot.XAxis.SetZoomInLimit(20);//限制放大时横轴的最小间距
             ScottPlot_Basic.Plot.Layout(left: 90, right: 60, bottom: 70, top: 45, padding: -15);

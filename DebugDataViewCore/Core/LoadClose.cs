@@ -25,7 +25,7 @@ namespace DebugDataViewCore
                 Default.Unregister<ExpressionItemChanged>(this);
                 Default.Unregister<DataIntervalMove>(this);
                 if (_dte != null) _dbgEvents.OnEnterBreakMode -= OnBreakMode;
-                _dataViewWindow.Dispose();
+                _dataViewWindow?.Dispose();
             }
             base.Dispose(disposing);
         }
