@@ -1,5 +1,7 @@
-﻿using EnvDTE;
+﻿using System;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
+using static DataSturctures.StatusEnum;
 using Task = System.Threading.Tasks.Task;
 
 namespace DebugDataViewCore
@@ -60,6 +62,25 @@ namespace DebugDataViewCore
                 _dataViewWindow.Refresh();
             }
             else _dataViewWindow.PlotClear();
+        }
+
+        /// <summary>
+        /// debug进程语言判断
+        /// </summary>
+        /// <returns>支持时返回true，否则返回false</returns>
+        public bool Program_LanguageDetection()
+        {
+            var projects = _dte.ActiveSolutionProjects as Array;
+            if(projects == null) return false;
+            var project = projects.GetValue(0) as Project;
+            if(project == null) return false;
+            //目前仅对C#生效
+            if (project.FileName.EndsWith(".csproj")) 
+            { 
+                _currentProgramLanguage = ProgramLanguageEnum.Csharp;
+                return true;
+            }
+            return false;
         }
     }
 }

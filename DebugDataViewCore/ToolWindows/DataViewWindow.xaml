@@ -113,7 +113,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <!-- 工具栏 -->
-                            <ToolBarTray Grid.Row="0" AllowDrop="False" Background="White">
+                            <ToolBarTray Grid.Row="0" AllowDrop="False">
                                 <ToolBar>
                                     <ToggleButton IsChecked="{Binding IsHorizontalLock}">
                                         <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/左右箭头.png" Width="16" Height="16"/>
