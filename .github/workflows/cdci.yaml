@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: msbuild /t:build DebugDataView.slnx
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: ./Core/bin/Debug/DebugDataView.vsix
