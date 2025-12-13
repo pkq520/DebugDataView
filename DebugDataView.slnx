@@ -4,7 +4,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Core/">
-    <Project Path="DebugDataViewCore/DebugDataViewCore.csproj" Id="acc68f26-46f6-474c-a542-7db9d80abce5">
+    <Project Path="Core/DebugDataView.csproj" Id="acc68f26-46f6-474c-a542-7db9d80abce5">
       <Platform Solution="*|x86" Project="x86" />
     </Project>
   </Folder>
