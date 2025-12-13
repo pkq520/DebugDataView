@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using DataSturctures;
 using EnvDTE80;
 using static DataSturctures.StatusEnum;
@@ -27,9 +27,5 @@ namespace DebugDataViewCore
         /// 数据
         /// </summary>
         private readonly DebugDataStructures _debugData = new();
-        /// <summary>
-        /// 当前的程序语言
-        /// </summary>
-        private ProgramLanguageEnum _currentProgramLanguage = ProgramLanguageEnum.Unknow;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
@@ -13,19 +13,10 @@ namespace DebugDataViewCore.Commands
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (Package is DebugDataViewCorePackage debugDataViewCore)
             {
-                if (debugDataViewCore.Program_LanguageDetection())
-                {
-                    ToolWindowPane window = await DataView.ShowAsync();
-                    string selected = await GetSelectedTextAsync();
-                    if (window?.Content is DataViewWindow dataViewWindow)
-                    {
-                        debugDataViewCore.Init(dataViewWindow);
-                        await debugDataViewCore.DataViewItemAddAsync(selected);
-                    }
-                }
-                else
+                if (!debugDataViewCore.ProgramLanguageDetection())
                 {
                     string supportProgramLanguage = string.Join(",",
                         Enum.GetValues(typeof(ProgramLanguageEnum))
@@ -34,8 +25,29 @@ namespace DebugDataViewCore.Commands
                             .Select(item => item.ToString())
                     );
                     await VS.MessageBox.ShowWarningAsync(
-                        "The current plugin only supports the following languages:" + 
+                        "The current plugin only supports the following languages:" + Environment.NewLine +
                         supportProgramLanguage);
+                    return;
+                }
+                string selected = await GetSelectedTextAsync();
+                if (await debugDataViewCore.ValueTypeDetectionAsync(selected) == false)
+                {
+                    string supportValueType = string.Join(",",
+                        Enum.GetValues(typeof(SupportValueTypeEnum))
+                            .Cast<SupportValueTypeEnum>()
+                            .Select(item => item.ToString())
+                    );
+                    await VS.MessageBox.ShowWarningAsync(
+                        "The current plugin only supports the following valueType:" + Environment.NewLine +
+                        supportValueType);
+                    return;
+                }
+
+                ToolWindowPane window = await DataView.ShowAsync();
+                if (window?.Content is DataViewWindow dataViewWindow)
+                {
+                    debugDataViewCore.Init(dataViewWindow);
+                    await debugDataViewCore.DataViewItemAddAsync(selected);
                 }
             }
         }

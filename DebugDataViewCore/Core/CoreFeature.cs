@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using static DataSturctures.StatusEnum;
@@ -68,17 +69,37 @@ namespace DebugDataViewCore
         /// debug进程语言判断
         /// </summary>
         /// <returns>支持时返回true，否则返回false</returns>
-        public bool Program_LanguageDetection()
+        public bool ProgramLanguageDetection()
         {
-            var projects = _dte.ActiveSolutionProjects as Array;
-            if(projects == null) return false;
-            var project = projects.GetValue(0) as Project;
-            if(project == null) return false;
-            //目前仅对C#生效
-            if (project.FileName.EndsWith(".csproj")) 
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (_dte.ActiveSolutionProjects is not Array projects) return false;
+            if(projects.GetValue(0) is not Project project) return false;
+            if (project.FileName.EndsWith(ProgramLanguageEnum.Csharp.GetDescription())) 
             { 
-                _currentProgramLanguage = ProgramLanguageEnum.Csharp;
                 return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 变量类型判断
+        /// </summary>
+        /// <param name="expression">需要判断的变量名称</param>
+        /// <returns>支持时返回true，否则返回false</returns>
+        public async Task<bool> ValueTypeDetectionAsync(string expression)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            Expression expressionResult = _dte.Debugger.GetExpression(expression, true);
+            if (expressionResult is { IsValidValue: true })
+            {
+                string valueType = expressionResult.Type;
+                if (valueType == SupportValueTypeEnum.ShortArrary.GetDescription() ||
+                    valueType == SupportValueTypeEnum.IntArrary.GetDescription() ||
+                    valueType == SupportValueTypeEnum.FloatArrary.GetDescription() ||
+                    valueType == SupportValueTypeEnum.DoubleArrary.GetDescription())
+                {
+                    return true;
+                }
             }
             return false;
         }

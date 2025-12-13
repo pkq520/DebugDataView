@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using static CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger;
 
 namespace DebugDataViewCore
@@ -20,6 +20,7 @@ namespace DebugDataViewCore
         /// <param name="disposing">标识是否释放当前实例的资源</param>
         protected override void Dispose(bool disposing)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (disposing)
             {
                 Default.Unregister<ExpressionItemChanged>(this);
