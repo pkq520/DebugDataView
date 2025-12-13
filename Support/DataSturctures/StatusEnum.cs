@@ -16,12 +16,12 @@ namespace DataSturctures
             /// <summary>
             /// 无法确定
             /// </summary>
-            Unknow,
+            Unknow = 0,
             /// <summary>
             /// C#
             /// </summary>
             [Description(".csproj")]
-            Csharp
+            Csharp = 1,
         }
 
         /// <summary>
@@ -33,22 +33,22 @@ namespace DataSturctures
             /// short数组
             /// </summary>
             [Description("short[]")]
-            ShortArrary,
+            ShortArrary = 0,
             /// <summary>
             /// int数组
             /// </summary>
             [Description("int[]")]
-            IntArrary,
+            IntArrary = 1,
             /// <summary>
             /// float数组
             /// </summary>
             [Description("float[]")]
-            FloatArrary,
+            FloatArrary = 2,
             /// <summary>
             /// double数组
             /// </summary>
             [Description("double[]")]
-            DoubleArrary,
+            DoubleArrary = 3,
         }
 
         /// <summary>

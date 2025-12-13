@@ -11,6 +11,11 @@ namespace DebugDataViewCore.Commands
     [Command(PackageIds.DataViewItemAdd)]
     internal sealed class DataViewItemAdd : BaseCommand<DataViewItemAdd>
     {
+        /// <summary>
+        /// 添加数据源字段
+        /// </summary>
+        /// <param name="e">未知</param>
+        /// <returns>返回该任务</returns>
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
