@@ -13,7 +13,7 @@
     <File Path=".github/ISSUE_TEMPLATE/question_report.md" />
   </Folder>
   <Folder Name="/.github/workflows/">
-    <File Path=".github/workflows/cdci.yaml" />
+    <File Path=".github/workflows/cicd.yaml" />
   </Folder>
   <Folder Name="/Core/">
     <Project Path="Core/DebugDataView.csproj" Id="acc68f26-46f6-474c-a542-7db9d80abce5">
