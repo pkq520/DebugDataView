@@ -1,0 +1,203 @@
+﻿<UserControl x:Class="DebugDataViewCore.DataViewWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+             xmlns:theming="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
+             xmlns:util="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
+             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             xmlns:styles="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             toolkit:Themes.UseVsTheme="True"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="1000"
+             Name="DataView"
+             >
+    <!--xmlns:debugDataViewCore="clr-namespace:DebugDataViewCore"-->
+    <!-- 运行时需移除全部的设计器定义以及相关变量，否则MVVM工具构建的文件无法成功编译，会出现诸如未包含变量定义的错误-->
+    <!--<d:UserControl.DataContext>
+        <debugDataViewCore:DataViewWindowViewModel/>
+    </d:UserControl.DataContext>-->
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderThickness" Value="0.3" />
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource VsFont.EnvironmentFontSize}" />
+        </Style>
+    </UserControl.Resources>
+    <DockPanel Margin="7">
+        <!-- 主体内容区 -->
+        <Grid MinHeight="200">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="230"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*" MinWidth="300"/>
+                </Grid.ColumnDefinitions>
+                <!-- 控制与文本信息显示区 -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0" Header="Control">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Margin="5, 5, 0, 5" Text="Expression:" />
+                                <TextBlock Grid.Column="2" Margin="0, 5, 5, 5" Text="{Binding DataIntervalInfoDiaplay}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Grid.Column="0" Margin="5, 0, 5, 5"
+                                      ItemsSource="{Binding ExpressionLists.Items}" 
+                                      SelectedItem="{Binding ExpressionLists.SelectedItem}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" Margin="5, 0, 5, 5" Content="Clear"
+                                      Command="{Binding ExpressionListsClearCommand }"/>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="Data info show">
+                        <DataGrid IsReadOnly="True" 
+                              CanUserAddRows="False"
+                              AutoGenerateColumns="False"
+                              ItemsSource="{Binding DataInfoItems}">    
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Description}" Width="*" TextBlock.TextAlignment="Center" />
+                                <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*"  TextBlock.TextAlignment="Center"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </Grid>
+                <!-- 图表显示区 -->
+                <Grid Grid.Column="2">
+                    <GroupBox Header="Data show">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- 工具栏 -->
+                            <ToolBarTray Grid.Row="0" AllowDrop="False">
+                                <ToolBar>
+                                    <ToggleButton IsChecked="{Binding IsHorizontalLock}">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/左右箭头.png" Width="16" Height="16"/>
+                                        <ToggleButton.ToolTip>
+                                            <ToolTip Content="Horizontal lock/unlock"/>
+                                        </ToggleButton.ToolTip>
+                                    </ToggleButton>
+                                    <ToggleButton IsChecked="{Binding IsVerticalLock}">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/上下箭头.png" Width="16" Height="16"/>
+                                        <ToggleButton.ToolTip>
+                                            <ToolTip Content="Vertical lock/unlock"/>
+                                        </ToggleButton.ToolTip>
+                                    </ToggleButton>
+                                    <Button Command="{Binding AutoScaleCommand}">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/左上右下箭头.png" Width="16" Height="16"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Auto scale"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <ToggleButton IsChecked="{Binding IsPeakInfoDiaplay}">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/十字标记.png" Width="16" Height="16"/>
+                                        <ToggleButton.ToolTip>
+                                            <ToolTip Content="Peak Information"/>
+                                        </ToggleButton.ToolTip>
+                                    </ToggleButton>
+                                    <Button Command="{Binding PlotRefreshCommand}">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/双旋转箭头.png" Width="16" Height="16"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Manual refresh"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Separator/>
+                                    <Button Command="{Binding LeftMoveCommand}">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/上一个_左双箭头.png" Width="16" Height="16"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Previous data"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button Command="{Binding RigthMoveCommand}">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/下一个_右双箭头.png" Width="16" Height="16"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Next data"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Separator/>
+                                    <!-- 导出 -->
+                                    <Button x:Name="ExportToFile" Click="Export_Click">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/文件.png" Width="16" Height="16"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Export as file"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button x:Name="ExportToPicture" Click="Export_Click">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/图片.png" Width="16" Height="16"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Export as image"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button x:Name="ExportToClipboard" Click="Export_Click">
+                                        <Image Source="pack://application:,,,/DebugDataViewCore;component/Resources/剪.png" Width="16" Height="16"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Export to clipboard"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                </ToolBar>
+                            </ToolBarTray>
+                            <WpfPlot Grid.Row="1" x:Name="ScottPlot_Basic" MouseDown="ScottPlot_Basic_MouseDown"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RunInfoDiaplay}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <TextBlock Text="{Binding RunInfoDiaplay}"/>
+            </Grid>
+        </Grid>
+        
+    </DockPanel>
+</UserControl>

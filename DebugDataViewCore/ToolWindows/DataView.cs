@@ -1,12 +1,10 @@
-﻿using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using EnvDTE;
-using EnvDTE80;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Imaging;
-using ScottPlot;
 
 namespace DebugDataViewCore
 {
@@ -18,7 +16,7 @@ namespace DebugDataViewCore
 
         public override Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
-            return Task.FromResult<FrameworkElement>(new DataViewControl());
+            return Task.FromResult<FrameworkElement>(new DataViewWindow());
         }
 
         [Guid("dd42af87-f6f3-41e4-9bbe-4d52b4f29702")]
