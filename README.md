@@ -1,7 +1,6 @@
 # DebugDataView
 
-[![CI](https://github.com/pkq520/DebugDataView/actions/workflows/ci.yaml/badge.svg)](https://github.com/pkq520/DebugDataView/actions/workflows/ci.yaml)
-[![CD](https://github.com/pkq520/DebugDataView/actions/workflows/cd.yaml/badge.svg)](https://github.com/pkq520/DebugDataView/actions/workflows/cd.yaml)
+[![CICD](https://github.com/pkq520/DebugDataView/actions/workflows/cicd.yaml/badge.svg)](https://github.com/pkq520/DebugDataView/actions/workflows/cicd.yaml)
 
 **Contributing:** We welcome contributions from the community! We invite contributions from anyone, including developers who may be new to contributing to open-source projects.
 
