@@ -1,0 +1,26 @@
+name: CICD
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: ['*']
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1.1.3
+    - name: Restore dependencies
+      run: msbuild /t:restore DebugDataView.slnx
+    - name: Build
+      run: msbuild /t:build DebugDataView.slnx
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: ./Core/bin/Debug/DebugDataView.vsix

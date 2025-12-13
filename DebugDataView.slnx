@@ -3,6 +3,18 @@
     <Platform Name="Any CPU" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/.github/">
+    <File Path=".github/CODE_OF_CONDUCT.md" />
+    <File Path=".github/pull_request_template.md" />
+  </Folder>
+  <Folder Name="/.github/ISSUE_TEMPLATE/">
+    <File Path=".github/ISSUE_TEMPLATE/bug_report.md" />
+    <File Path=".github/ISSUE_TEMPLATE/feature_suggested.md" />
+    <File Path=".github/ISSUE_TEMPLATE/question_report.md" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/cicd.yaml" />
+  </Folder>
   <Folder Name="/Core/">
     <Project Path="Core/DebugDataView.csproj" Id="acc68f26-46f6-474c-a542-7db9d80abce5">
       <Platform Solution="*|x86" Project="x86" />
@@ -16,6 +28,8 @@
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
+    <File Path="CHANGELOG.md" />
+    <File Path="CONTRIBUTING.md" />
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
   </Folder>
